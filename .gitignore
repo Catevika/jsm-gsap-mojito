@@ -25,3 +25,6 @@ dist-ssr
 
 # Spell checker files
 cspell.json
+
+# JSM GSAP guide
+GSAP Guide v2.pdf
