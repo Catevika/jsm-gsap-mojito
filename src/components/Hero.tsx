@@ -75,6 +75,7 @@ const Hero = () => {
 	return (
 		<>
 			<section
+				ref={containerRef}
 				id='hero'
 				className='noisy'>
 				<h1 className='title'>MOJITO</h1>
