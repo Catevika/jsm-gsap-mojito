@@ -88,4 +88,5 @@ const Art = () => {
 		</section>
 	);
 };
+
 export default Art;
