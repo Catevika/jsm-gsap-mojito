@@ -1,7 +1,7 @@
 import {useGSAP} from '@gsap/react';
 import gsap from 'gsap';
 import {SplitText} from 'gsap/all';
-import {useRef} from 'react';
+import {useRef, useEffect} from 'react';
 import {useMediaQuery} from 'react-responsive';
 
 const Hero = () => {
@@ -45,32 +45,29 @@ const Hero = () => {
 					.to('.right-leaf', {y: 200}, 0)
 					.to('.left-leaf', {y: -200}, 0);
 			});
-
-			if (videoRef.current) {
-				const video = videoRef.current;
-				const startValue = isMobile ? 'top 50%' : 'center 60%';
-				const endValue = isMobile ? '120% top' : 'bottom top';
-
-				const tl = gsap.timeline({
-					scrollTrigger: {
-						trigger: video,
-						start: startValue,
-						end: endValue,
-						scrub: true,
-						pin: true,
-					},
-				});
-
-				video.onloadedmetadata = () => {
-					tl.to(video, {
-						currentTime: video.duration || 1,
-						ease: 'none',
-					});
-				};
-			}
 		},
 		{scope: containerRef, dependencies: [isMobile]},
 	);
+
+	useEffect(() => {
+		const playVideo = async () => {
+			if (videoRef.current) {
+				try {
+					await videoRef.current.play();
+				} catch (err) {
+					console.error('Autoplay failed:', err);
+				}
+			}
+		};
+
+		playVideo();
+
+		return () => {
+			if (videoRef.current && !videoRef.current.paused) {
+				videoRef.current.pause();
+			}
+		};
+	}, []);
 
 	return (
 		<>
@@ -109,11 +106,12 @@ const Hero = () => {
 					</div>
 				</div>
 			</section>
-			<div className='video absolute inset-0'>
+			<div className='video absolute inset-0 bg-black/40'>
 				<video
 					ref={videoRef}
 					muted
 					playsInline
+					webkit-playsinline
 					preload='auto'
 					loop
 					src='/videos/output.mp4'
